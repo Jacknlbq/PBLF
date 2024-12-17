@@ -36,7 +36,7 @@ typedef struct source{
 typedef struct info_foods{
     char food_name[Maxsize];
     int price;
-    int sale;
+    int sale;//销量
      Source *source;//顺序表存用料
      int NUM_source;//用料种类数
 }info_foods;
