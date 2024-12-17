@@ -65,6 +65,7 @@ typedef struct Data{
     Ingredient *Igd;
     User *users;
     Menu *menu;
+    Strategy *strategy;
     List* head,*tail;//指向队列头尾
 }Data;
 #ifndef WUYU_H
