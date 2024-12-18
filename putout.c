@@ -50,3 +50,64 @@ void push_Menu(Menu* p)
     fclose(fp);
 } 
 //更新用户数据库
+void push_user(User *p)
+{
+    FILE *fp;
+    if((fp=fopen(User_filename,"w"))==NULL)
+    {
+        printf("无法打开%s文件!\n",User_filename);
+        return ;
+    }
+    else{
+         p=p->next;
+         while(p)
+         {
+            fprintf(fp,"%s\n",p->ID);
+            fprintf(fp,"%s\n",p->code);
+            fprintf(fp,"%c\n",p->grade);
+            p=p->next;
+         }
+         printf("用户数据库已更新完毕！\n");
+    }
+    fclose(fp);
+}
+//中序遍历更新策略数据库
+void push_strategy(Strategy* p)
+{
+    typedef struct stack{
+        Strategy *data;
+        struct stack* next;
+    }stack;
+    stack *s=NULL;
+    FILE *fp;
+    if((fp=fopen("test.txt","w"))==NULL)
+    {
+        printf("无法打开%s文件!\n",Strategy_filename);
+        return ;
+    }
+    else{
+        while(p!=NULL||s!=NULL)
+        {
+            //p不为空，则入栈(头插法）。
+            if(p)
+            {
+                 stack* new=(stack*)malloc(sizeof(stack));
+                 new->next=s;
+                 s=new;
+                 s->data=p;
+                 p=p->left;
+            }
+            //p为空，出栈同时输出该值。
+            else{
+               fprintf(fp,"%d\n",s->data->origin);
+               fprintf(fp,"%.2lf\n",s->data->discont); 
+               p=s->data->right;
+               stack *new=s;
+               s=s->next;
+               free(new);
+            }
+        }       
+        printf("消费优惠策略数据库已更新！\n");
+    }
+    fclose(fp);
+}
