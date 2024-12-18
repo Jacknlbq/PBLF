@@ -113,9 +113,9 @@ User* init_user()
         while(!feof(fp))
         {
 
+            //节点交替
             new=(User*)malloc(sizeof(User));
             new->next=NULL;
-            //节点交替
             s->next=new;
             s=new;
 
@@ -139,7 +139,7 @@ void search_insert(Strategy *root,Strategy *p)
             if(!root->left)
             {
                 root->left=p;
-                break;
+                return;
             }
              root=root->left;        
          }
@@ -148,7 +148,7 @@ void search_insert(Strategy *root,Strategy *p)
             if(!root->right)
             {
                 root->right=p;
-                break;
+                return;
             }
             root=root->right;
          }
@@ -178,13 +178,14 @@ Strategy *init_strategy()
          {
             fseek(fp,-1,1);
             fscanf(fp,"%d",&p->origin);
-            fscanf(fp,"%lf",&p->discont);
+            fscanf(fp,"%lf\n",&p->discont);
             if(p!=root)
             {
                 search_insert(root,p);
             }
             p=(Strategy*)malloc(sizeof(Strategy));
             p->left=p->right=NULL;
+            fgetc(fp);
          }
          free(p); 
          fclose(fp);
