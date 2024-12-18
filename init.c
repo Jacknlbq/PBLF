@@ -1,5 +1,5 @@
 #include "head.h"
-
+int current_Igd;
 //初始化
 //初始化原料表，返回指向第一原料的地址，原料表是用类似数组的结构存的。文件创建失败返回空指针
 Ingredient* init_Igd()
@@ -25,12 +25,12 @@ Ingredient* init_Igd()
        {
            fseek(fp,-1,SEEK_CUR);
            fscanf(fp,"%s\n",p[i].Igd_name);
-           fscanf(fp,"%d\n",p[i].Igd_amount);
+           fscanf(fp,"%d\n",&p[i].Igd_amount);
            fgetc(fp);
            i++;
        }
        fclose(fp);
-       printf("原料表已经初始化，现已有%d个元素。",i);
+       printf("原料表已经初始化，现已有%d个元素。\n",i);
        current_Igd=i;
    }
    return p;
@@ -56,7 +56,7 @@ Menu *init_menu()
         free(p);
         return NULL;
       }
-        else printf("文件创建完成！\n");
+        else printf("%s文件创建完成!\n",Foods_filename);
    }
    else{
       fgetc(fp);
@@ -72,7 +72,7 @@ Menu *init_menu()
         info_foods *s=(info_foods*)malloc(sizeof(info_foods));
         fscanf(fp,"%s",s->food_name);
         fscanf(fp,"%d",&s->price);
-        fscanf(fp,"%d",s->NUM_source);
+        fscanf(fp,"%d",&s->NUM_source);
         
         Source *q=(Source*)malloc(sizeof(Source)*s->NUM_source);
         for(int i=0;i<s->NUM_source;i++)
@@ -87,6 +87,7 @@ Menu *init_menu()
       }
               fclose(fp);
    }
+   return p;
 }
 //初始化用户表,返回指向第一个用户的指针（没有数据）,如果文件创建失败，返回NULL，
 User* init_user()
@@ -121,14 +122,76 @@ User* init_user()
             fseek(fp,-1,1);
             fscanf(fp,"%s\n",s->ID);
             fscanf(fp,"%s\n",s->code);
-            fscanf(fp,"%c\n",s->grade);
+            fscanf(fp,"%c\n",&s->grade);
             fgetc(fp);
         }
-        
+        fclose(fp);
     }
     return p;
 }
+void search_insert(Strategy *root,Strategy *p)
+{
+    int n=p->origin;
+     while(1)
+     {
+         if(n<root->origin)
+         {
+            if(!root->left)
+            {
+                root->left=p;
+                break;
+            }
+             root=root->left;        
+         }
+         else
+         {
+            if(!root->right)
+            {
+                root->right=p;
+                break;
+            }
+            root=root->right;
+         }
+     }
+}
+//非递归创建排序二叉树--消费政策,如果文件未创建则返回NULL;否则返回根节点（有值）
+Strategy *init_strategy()
+{
+     Strategy *root=(Strategy*)malloc(sizeof(Strategy));
+     root->left=root->right=NULL;
+     Strategy *p=root;
 
+     FILE *fp;
+     if((fp=fopen(Strategy_filename,"r"))==NULL) 
+     {
+         if((fp=fopen(Strategy_filename,"w"))==NULL)
+           {
+            printf("%s文件创建失败!\n",Strategy_filename);
+           }
+           else printf("%s文件创建完成!\n",Strategy_filename);
+           free(fp);
+           return NULL;
+     }
+     else {
+        fgetc(fp);
+         while(!feof(fp))
+         {
+            fseek(fp,-1,1);
+            fscanf(fp,"%d",&p->origin);
+            fscanf(fp,"%lf",&p->discont);
+            if(p!=root)
+            {
+                search_insert(root,p);
+            }
+            p=(Strategy*)malloc(sizeof(Strategy));
+            p->left=p->right=NULL;
+         }
+         free(p); 
+         fclose(fp);
+     }
+    
+    return root;
+}
 //初始化Data,
 void init_Data(Data* p)
 {
@@ -137,5 +200,6 @@ void init_Data(Data* p)
     p->Igd=init_Igd();
     p->menu=init_menu();
     p->users=init_user();
+    p->strategy=init_strategy();
 }
 
