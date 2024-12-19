@@ -80,7 +80,7 @@ typedef struct Data{
     User *users;
     Menu *menu;
     Strategy *strategy;
-    int head,tail,status;
+    int head,tail;
     Queue* list;//指向队列头尾
 }Data;
 #ifndef WUYU_H
@@ -106,6 +106,6 @@ void menu_insert(Menu *L);
 void menu_delete(Menu *L);
 void menu_update(Menu *L);
 void menu_comment(Menu *L);
-void print_menu(Menu *L);
+void menu_print(Menu *L);
 
 #endif
