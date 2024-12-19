@@ -10,6 +10,8 @@
 #define Igd_filename "Igd.txt"
 #define User_filename "User.txt"
 #define Foods_filename "Foods.txt"
+#define Strategy_filename "Strategy.txt"
+
 
 
 //原料信息
@@ -32,11 +34,12 @@ typedef struct source{
     int source_amount;//原料数量
 }Source;
 
-//食物信息，名字，价格，用料指针，用料类数。
+//食物信息，名字，价格，用料指针，用料类数,唯一标识Id。
 typedef struct info_foods{
     char food_name[Maxsize];
     int price;
-    int sale;//销量
+    int food_id;
+    int sale;
      Source *source;//顺序表存用料
      int NUM_source;//用料种类数
 }info_foods;
@@ -48,9 +51,11 @@ typedef struct menu{
 }Menu;
 
 //点餐顺序，采用顺序表，队列
-typedef struct list{
+typedef struct queue{
     char  ID[Maxsize];
-}List;
+    int NUM_foods;
+    int *foos_id;
+}Queue;
 
 //优惠策略,排序二叉树存储
 typedef struct pstrategy{
@@ -66,12 +71,23 @@ typedef struct Data{
     User *users;
     Menu *menu;
     Strategy *strategy;
-    List* head,*tail;//指向队列头尾
+    int head,tail,status;
+    Queue* list;//指向队列头尾
 }Data;
 #ifndef WUYU_H
 #define WUYU_H
-int current_Igd;
 
+extern int current_Igd;
 
+Ingredient* init_Igd();
+Menu *init_menu();
+User* init_user();
+Strategy *init_strategy();
+void search_insert(Strategy *root,Strategy *p);
+
+void push_Igd(Ingredient *p);
+void push_Menu(Menu* p);
+void push_user(User *p);
+void push_strategy(Strategy* p);
 
 #endif
