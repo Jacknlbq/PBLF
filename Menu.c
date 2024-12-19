@@ -1,193 +1,120 @@
-#include <stdio.h>
-#include <stdlib.h>
 #include "head.h"
-int ID = 0;
+int ID;
 
-Source *get_source(){
+//获取原料列表,n为原料种类数
+Source *get_source(int n)
+{
     int i = 0;
-    Source source[Max_Igd];
-    for (;i++;i<Max_Igd){
-        source[i].source_Id = i+1;
-        printf("请输入所需原料数量：");
-        scanf("%d",&(source[i].source_amount));
-    }
+    Source *source = (Source*)malloc(sizeof(Source)*n);
+     for(int i=0;i<n;i++)
+        {
+            printf("请输入原料Id:");
+            scanf("%d",&source[i].source_Id);
+            printf("请输入原料消耗量:");
+            scanf("%d\n",&source[i].source_amount);
+        }
     return source;
-}//获取原料列表
+}
 
-info_foods *get_info(){
+info_foods *get_info()
+{
     info_foods *info = (info_foods*)malloc(sizeof(info_foods));
     if (info == NULL){
         return NULL;
     }
-    char food_name[Maxsize];
-    char ch = '0';
-    int i = 0;
+    
     printf("请输入菜品名称：");
-    while (ch = getchar() != "\n"){
-    food_name[i++] = ch;
-    }
-    food_name[i] = '\0';
+    scanf("%s",info->food_name);
     
-    int price = 0;
-    printf("请输入菜品价格：");
-    scanf("%.2f",&price);
-    
-    char food_description[100];
-    char ch = '0';
-    int j = 0;
-    printf("请输入菜品名称：");
-    while (ch = getchar() != "\n"){
-    food_description[j++] = ch;
-    }
-    food_description[j] = '\0';
-    
-    Source *source = get_source();
 
-    int NUM_source = 0;
-    printf("请输入用料总数");
-    scanf("%d",&NUM_source);
-    strcpy(info->food_name, food_name);
-    info->price = price;
-    strcpy(info->food_description, food_description);
-    info->source = source;
-    info->NUM_source = NUM_source;
+    printf("请输入菜品价格：");
+    scanf("%d",&info->price);
+    
+    info->food_id = ID++;
+
+    printf("请输入菜品所需原料种类数：");
+    scanf("%d",&info->NUM_source);
+
+    info->source = get_source(info->NUM_source);
+
+    printf("请输入菜品描述：");
+    scanf("%s",info->food_description);
     return info;
 }//获取菜品信息
-
-void menu_insert(Menu *L){
-    if (L->next == NULL){
+//新加菜品
+void menu_insert(Menu *L)
+{
         Menu *node = (Menu*)malloc(sizeof(Menu));
-        if (node == NULL){
-            return 0;
-        }//检测申请内存是否成功
-        info_foods *info = get_info();//调用获取食物信息函数
-        node->foodsinfo = info;
-        node->foodsinfo->food_id = ID;
-        ID++;
-        node->next = NULL;
+        node->foodsinfo = get_info();//调用获取食物信息函数
+        //头插法插入
+        node->next = L->next;
         L->next = node;
-        return 1;
-    }//若链表为空，则创建一个新节点，并插入到链表头
-    else{
-        Menu *node = L->next;
-        while (node->next!= NULL){
-            node = node->next;
-        }
-        node->next = (Menu*)malloc(sizeof(Menu));
-        if (node->next == NULL){
-            return 0;
-        }//检测申请内存是否成功
-        info_foods *info = get_info();//调用获取食物信息函数
-        node->next->foodsinfo = info;
-        node->foodsinfo->food_id = ID;
-        ID++;
-        node->next->next = NULL;
-        return 1;
-    }//若链表不为空，则遍历到最后一个节点，并插入一个新节点
+        printf("菜品添加成功！\n");
 }
-/*用例:
-    menu_insert(menu1);
-*/
-
-void menu_delete(Menu *L){//food_name字符数组这里可能会出现有无空字符的问题，所以改用food_id
-    if (L->next == NULL){
-        return 0;
-    }
-    else{
+//删除菜品
+void menu_delete(Menu *L)
+{
         int i;
-        printf("请输入您要删除的菜品ID:");
+        printf("请输入您要删除的菜品的ID:");
         scanf("%d",&i);
-        Menu *node = L->next;
-        Menu *pre = L;
-        while (node->next!= NULL){
-            if (node->foodsinfo->food_id == i){
-                pre->next = node->next;
+        while (L->next){
+            if (L->next->foodsinfo->food_id == i){
+                Menu *node = L->next;
+                L->next = node->next;
+                free(node->foodsinfo->source);
                 free(node);
-                return 1;
-            }//循环遍历链表找到要删除的节点，并删除
-            pre = node;
-            node = node->next;
-        }
-        if (node->foodsinfo->food_id == i){
-            pre->next = NULL;
-            free(node);
-            return 1;
-        }//若要删除的节点是最后一个节点，则直接删除
-    }
-    return 0;
+                printf("删除成功！\n");
+                return ;
+            }
+            L=L->next;
+         }
+        printf("没有找到该菜品！\n");
 }
-/*用例:
-    menu_delete(Menu1);
-*/
-
-void menu_update(Menu *L){
-    if (L->next == NULL){
-        return 0;
-    }//若链表为空，则返回
-    else{
-        Menu *node = L->next;
-        int i = 0;
-        printf("请输入您要修改的菜品ID:");
+//修改菜品信息
+void menu_update(Menu *L)
+{
+   int i;
+        printf("请输入您要更改的菜品ID:");
         scanf("%d",&i);
-        while (node->next != NULL){
-            if (node->foodsinfo->food_id == i){
-                info_foods *info = get_info();//调用获取食物信息函数
-                node-> foodsinfo = info;
-                return 1;
-            }
-            node = node->next;
-        }//循环遍历链表根据菜品名找到要修改的菜品，并修改菜品信息
-        if (node->foodsinfo->food_id == i){
-            info_foods *info = get_info();//调用获取食物信息函数
-            node->foodsinfo = info;
-            return 1;
-        }
-    }
-    return 0;
-}//修改单个菜品信息
-/*用例：
-    menu_update(Menu1);
-*/
+        while (L->next){
+            if (L->next->foodsinfo->food_id == i){
+                printf("请输入新的菜品信息：\n");
 
-void menu_comment(Menu *L){
-    if (L->next == NULL){
-        return 0;
-    }//若链表为空，则返回
-    else{
-        char *new_description;
-        char ch;
-        int i = 0;
-        printf("请输入您要评论的菜品ID:");
+                Menu *node = L->next->next;
+                free(L->next->foodsinfo->source);
+                free(L->next);
+                Menu *new_node = (Menu*)malloc(sizeof(Menu));
+                new_node->foodsinfo = get_info();
+                new_node->next = node;
+                L->next = new_node;
+                printf("修改成功！\n");
+                return ;
+            }
+            L=L->next;
+         }
+        printf("没有找到该菜品！\n");
+}
+//仅修改单个菜品描述
+void menu_comment(Menu *L)
+{
+        
+        int i;
+        printf("请输入您要描述的菜品的ID:");
         scanf("%d",&i);
-        printf("请输入新的描述:");
-        new_description = (char*)malloc(100*sizeof(char));
-        int j = 0;
-        ch = getchar();
-        while(ch != '\n'){
-            new_description[j++] = ch;
-            ch = getchar();
-        }
-        new_description[j] = '\0';
-        while((ch = getchar()) != '\n'){
-            new_description[i++] = ch;
-        }
-        Menu *node = L->next;
-        while (node->next != NULL){
-            if (node->foodsinfo->food_id == i){
-                strcpy(node->foodsinfo->food_description,new_description);
-                return 1;
+        while (L->next){
+            if (L->next->foodsinfo->food_id == i){
+                printf("请输入新的菜品描述：\n");
+                scanf("%s",L->next->foodsinfo->food_description);
+                printf("修改成功！\n");
+                return ;
             }
-            node = node->next;
-        }//循环遍历链表根据菜品ID找到要修改的菜品，并修改菜品信息
-        if (node->foodsinfo->food_id == i){
-            strcpy(node->foodsinfo->food_description,new_description);
-            return 1;
-        }
-    }
-    return 0;
-}//仅修改单个菜品描述
-
-void menu_print(Menu *L){
+            L=L->next;
+         }
+        printf("没有找到该菜品！\n");
+    
+}
+void menu_print(Menu *L)
+{
     if (L->next == NULL){
         printf("菜单为空!\n");
         return;
@@ -202,5 +129,4 @@ void menu_print(Menu *L){
             node = node->next;
         }
     }
-    return 0;
-}//向用户打印菜单
+}//打印菜单
