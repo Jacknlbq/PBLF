@@ -157,6 +157,17 @@ void menu_comment(Menu *L){
         char *new_description;
         char ch;
         int i = 0;
+        printf("请输入您要评论的菜品ID:");
+        scanf("%d",&i);
+        printf("请输入新的描述:");
+        new_description = (char*)malloc(100*sizeof(char));
+        int j = 0;
+        ch = getchar();
+        while(ch != '\n'){
+            new_description[j++] = ch;
+            ch = getchar();
+        }
+        new_description[j] = '\0';
         while((ch = getchar()) != '\n'){
             new_description[i++] = ch;
         }
@@ -167,7 +178,7 @@ void menu_comment(Menu *L){
                 return 1;
             }
             node = node->next;
-        }//循环遍历链表根据菜品名找到要修改的菜品，并修改菜品信息
+        }//循环遍历链表根据菜品ID找到要修改的菜品，并修改菜品信息
         if (node->foodsinfo->food_id == i){
             strcpy(node->foodsinfo->food_description,new_description);
             return 1;
