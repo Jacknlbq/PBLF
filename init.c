@@ -196,23 +196,13 @@ Strategy *init_strategy()
     return root;
 }
 //初始化食物ID
-void init_ID(){
-    FILE *fp;
-    if((fp=fopen(ID_filename,"r"))==NULL)
+void init_ID(Menu *p){
+    ID=0;
+    p=p->next;
+    while(p)
     {
-        if((fp=fopen(ID_filename,"w"))==NULL)
-        {
-            printf("无法创建ID文件!\n");
-            return ;
-        }
-        else{
-            ID=0;
-            fclose(fp);
-        }
-    }
-    else{
-        fscanf(fp,"%d",&ID);
-        fclose(fp);
+       ID = p->foodsinfo->food_id>ID ?p->foodsinfo->food_id :ID;
+       p=p->next;
     }
 }
 //初始化Data,
