@@ -71,6 +71,7 @@ Menu *init_menu()
         fseek(fp,-1,1);
         info_foods *s=(info_foods*)malloc(sizeof(info_foods));
         fscanf(fp,"%s",s->food_name);
+        fscanf(fp,"%d",&s->food_id);
         fscanf(fp,"%d",&s->price);
         fscanf(fp,"%d",&s->NUM_source);
         
@@ -80,9 +81,10 @@ Menu *init_menu()
             fscanf(fp,"%d",&q[i].source_Id);
             fscanf(fp,"%d\n",&q[i].source_amount);
         }
+
+        fscanf(fp,"%s\n",s->food_description);
          s->source=q;
          tail->foodsinfo=s;
-
          fgetc(fp);
       }
               fclose(fp);
@@ -193,11 +195,30 @@ Strategy *init_strategy()
     
     return root;
 }
+//初始化食物ID
+void init_ID(){
+    FILE *fp;
+    if((fp=fopen(ID_filename,"r"))==NULL)
+    {
+        if((fp=fopen(ID_filename,"w"))==NULL)
+        {
+            printf("无法创建ID文件!\n");
+            return ;
+        }
+        else{
+            ID=0;
+            fclose(fp);
+        }
+    }
+    else{
+        fscanf(fp,"%d",&ID);
+        fclose(fp);
+    }
+}
 //初始化Data,
 void init_Data(Data* p)
 {
     p=(Data*)malloc(sizeof(Data));
-    p->head=p->tail=NULL;
     p->Igd=init_Igd();
     p->menu=init_menu();
     p->users=init_user();
