@@ -34,12 +34,12 @@ typedef struct source{
     int source_amount;//原料数量
 }Source;
 
-//食物信息，名字，价格，用料指针，用料类数,唯一标识Id。
+//食物信息，名字，价格，用料头指针，用料总类数, 唯一标识ID，菜品描述。
 typedef struct info_foods{
+    int food_id;
     char food_name[Maxsize];
     int price;
-    int food_id;
-    int sale;
+    char food_description[100];//菜品描述
      Source *source;//顺序表存用料
      int NUM_source;//用料种类数
 }info_foods;
@@ -64,6 +64,15 @@ typedef struct pstrategy{
     struct pstrategy *left,*right;
 }Strategy;
 
+typedef struct res_info{
+    char res_name[Maxsize];//餐厅名，只需初始化
+    char res_owner[Maxsize];//餐厅所有者，只需初始化
+    int res_contactnum[18];//联系电话，只需初始化
+    char res_address[Maxsize];//餐厅地址，只需初始化
+    int res_table; //= Max_table 桌位数
+    float res_turnover;//= 0.00 餐厅营业额
+    float res_profit;//= res_turnover*0.25 餐厅利润
+}Res_info;
 
 //用于访问各种数据
 typedef struct Data{
@@ -78,6 +87,7 @@ typedef struct Data{
 #define WUYU_H
 
 extern int current_Igd;
+extern int ID;
 
 Ingredient* init_Igd();
 Menu *init_menu();
@@ -89,5 +99,13 @@ void push_Igd(Ingredient *p);
 void push_Menu(Menu* p);
 void push_user(User *p);
 void push_strategy(Strategy* p);
+
+Source *get_source();
+info_foods *get_info();
+void menu_insert(Menu *L);
+void menu_delete(Menu *L);
+void menu_update(Menu *L);
+void menu_comment(Menu *L);
+void print_menu(Menu *L);
 
 #endif
