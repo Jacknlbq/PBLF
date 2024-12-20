@@ -72,7 +72,7 @@ Menu *init_menu()
         info_foods *s=(info_foods*)malloc(sizeof(info_foods));
         fscanf(fp,"%s",s->food_name);
         fscanf(fp,"%d",&s->food_id);
-        fscanf(fp,"%d",&s->price);
+        fscanf(fp,"%lf",&s->price);
         fscanf(fp,"%d",&s->NUM_source);
         
         Source *q=(Source*)malloc(sizeof(Source)*s->NUM_source);
@@ -125,6 +125,8 @@ User* init_user()
             fscanf(fp,"%s\n",s->ID);
             fscanf(fp,"%s\n",s->code);
             fscanf(fp,"%c\n",&s->grade);
+            fscanf(fp,"%lf\n",&s->surplus);
+            fscanf(fp,"%lf\n",&s->consumption);
             fgetc(fp);
         }
         fclose(fp);
