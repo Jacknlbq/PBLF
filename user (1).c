@@ -1,294 +1,236 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
-#define Maxsize 30//名字长度上限
-#define Max_Igd 20//原料上限
-#define Max_table 50 //桌位
-#define Max_user 1000//用户上限
-
-#define Igd_filename "Igd.txt"
-#define User_filename "User.txt"
-#define Foods_filename "foods.txt"
-#define Menu_filename "menu/txt"
-
-
-//原料信息
-typedef struct ingredient
-{
-    char Igd_name[Maxsize];//原料名
-    int Igd_amount;//原料数量
-}Ingredient;
-
-//用户信息
- typedef struct  user{
-    char ID[Maxsize];
-    char code[Maxsize];
-    char grade;//"区分用户等级，享受不同折扣,"A","B"...
-    struct user *next;
-}User;
-
-//用料信息
-typedef struct source{
-    int source_Id;//用于直接访问原料表Id-1即为顺序表下标。
-    int source_amount;//原料数量
-}Source;
-
-//食物信息，名字，价格，用料头指针，用料总类数。
-typedef struct info_foods{
-    char food_name[Maxsize];
-    int price;
-     Source *source;//顺序表存用料
-     int NUM_source;//用料种类数
-}info_foods;
-
-//菜单信息，链表存储，数据单元为食物信息。
-typedef struct menu{
-   info_foods *foodsinfo;
-   struct menu* next;
-}Menu;
-
-//点餐顺序，采用顺序表，队列
-typedef struct list{
-    char  ID[Maxsize];
-}List;
-
-//用于访问各种数据
-typedef struct Data{
-    Ingredient *Igd;
-    User *users;
-    Menu *menu;
-    List* head,*tail;//指向队列头尾
-}Data;
-
-
-//************************************************************************************************************************ */
-
-User* create_user(char id[],char code[],char grade) 
+#include "head.h"
+//创建节点
+User* create_user() 
 {
     
     User* newUser = (User*)malloc(sizeof(User));
-    strcpy(newUser->ID,id);
-    
-
-    strcpy(newUser->code,code);
-    
-
-    newUser->grade=grade;
+    printf("输入该账户的id: ");
+    scanf("%s",newUser->ID);
+    printf("输入该账户的密码: ");
+    scanf("%s",newUser->code);
+    newUser->grade='C';
+    printf("当前用户等级：%c\n",newUser->grade);
+    newUser->consumption=newUser->surplus=0;
+    printf("用户创建完成！\n");
 
     newUser->next=NULL;
     return newUser;
-}//创建节点
-
-int isUserExist(User*head, char id[])
-{
-    User*temp=head;
-    while(temp!= NULL )
-    {
-        if((strcmp(temp->ID,id)==0))
-        {
-        return 1;
-        }
-        temp=temp->next;
-    }
-    return 0;
-}//检查id是否存在
-
-void add_user(User **head)
-{
-    char id[Maxsize];
-    char code[Maxsize];
-    char grade;
-    printf("输入id: ");
-    scanf("%s",id);
-    printf("输入密码: ");
-    scanf("%s",code);
-    printf("输入等级: ");
-    scanf(" %c",&grade);
-    if(isUserExist(*head,id))
-    {
-        printf("用户名已经存在");
-        return;
-    }
-    User *newUser =create_user(id,code,grade);
-    if(*head==NULL)
-    {
-        *head=newUser;
-    }
-    else
-    {
-        User*temp =*head;
-        while(temp->next!=NULL)
-        {
-            temp = temp->next;
-        }
-        temp->next = newUser;
-    }
-}//添加新用户
-
-void delete_user(User **head)
-{
-    char id[Maxsize];
-    printf("输入id: ");
-    scanf("%s",id);
-    User*temp =*head;
-    User*prev=NULL;
-    if(temp != NULL && (strcmp(temp->ID,id)==0))
-    {
-        *head=temp->next;
-        free(temp);
-        return;
-    }
-    //检测第一个
-    while(temp!= NULL && (strcmp(temp->ID,id)!=0))
-    {
-        prev=temp;
-        temp=temp->next;
-        free(temp);
-    }
-    //遍历
-    if(temp=NULL)
-    return;
-    //不存在时返回
-    prev->next=temp->next;
-    free(temp);
-}//删除用户
-
-void changeCode(User *head)
-{   char id[Maxsize];
-    char newCode[Maxsize];
-    char grade;
-    printf("输入id: ");
-    scanf("%s",id);
-    printf("输入新密码: ");
-    scanf("%s",newCode);
-    User*temp=head;
-    while(temp!=NULL)
-    {
-        if((strcmp(temp->ID,id))==0)
-        {
-            strcpy(temp->code,newCode);
-            return;
-        }
-        temp=temp->next;
-    }
-    printf("用户不存在");
-}//更改密码
-
-void changeGrade(User*head)
-{
-    char id[Maxsize];
-    char newgrade;
-    printf("输入id: ");
-    scanf("%s",id);
-    printf("输入新等级: ");
-    scanf(" %c",&newgrade);
-    User*temp=head;
-    while(temp!=NULL)
-    {
-        if(strcmp(temp->ID,id)==0)
-        {
-            temp->grade = newgrade;
-            return;
-        }
-        temp=temp->next;
-    }
-    printf("用户不存在");
-}//更改等级
-
-char* logIn(User*head)
-{
-    char id[Maxsize];
-    char code[Maxsize];
-    printf("输入id: ");
-    scanf("%s",id);
-    printf("输入密码: ");
-    scanf("%s",code);
-    User*temp=head;
-    while(temp!=NULL)
-    {
-        if((strcmp(temp->ID,id)==0) && (strcmp(temp->code,code)==0))
-        {
-            
-            return temp->ID;
-        }
-        temp=temp->next;
-    }
-    
-    return NULL;
-}//登录，返回登录者id,失败返回空指针
-
-void printInfo(User*head)
-{
-    User*temp=head;
-        while (temp!=NULL)
-        {
-            printf("%s\t%s\t%c\n",temp->ID,temp->code,temp->grade);
-            temp=temp->next;
-        }
 }
 
-void main()
+//检查id是否存在,存在返回对应节点的前驱节点，不存在返回NULL
+User* isUserExist(User*head, char id[])
 {
-    char id_scan[Maxsize];
-    char code_scan[Maxsize];
-    char grade_scan;
-    char current_user_id[Maxsize];
-    int operation=0;
-    User *head = NULL;
-    
+        while(head->next)
+    {
+        if((strcmp(head->next->ID,id)==0))
+        {
+             return head;
+        }
+        head=head->next;
+    }
+    return NULL;
+}
+//添加新用户
+void add_user(User *head)
+{
+    User *newUser=create_user();
+    while(isUserExist(head,newUser->ID))
+    {
+        printf("该id已存在,请重新输入!\n");
+        printf("输入该账户的id: ");
+        scanf("%s",newUser->ID);
+    }
+    //头插法
+    newUser->next=head->next;
+    head->next=newUser;
+    printf("添加成功！\n");
+}
+//删除用户
+void delete_user(User *head)
+{
+    char id[Maxsize];
+    printf("输入要删除的用户的id: ");
+    scanf("%s",id);
+    User *temp;
+    while(!(temp=isUserExist(head,id)))
+    {
+        printf("用户不存在,请重新输入!\n");
+        printf("输入要删除的用户的id: ");
+        scanf("%s",id);
+    }
+    char code[Maxsize];
+    printf("输入该用户密码: ");
+    scanf("%s",code);
+    int i=0;
+    while(strcmp(temp->next->code,code)!=0)
+    {
+        i++;
+        printf("密码错误,请重新输入!\n");
+        printf("输入密码: ");
+        scanf("%s",code);
+        if(i==3)
+        {
+            printf("密码错误次数过多,请稍后再试！\n");
+            return;
+        }
+    }
+    User *del=temp->next;
+    temp->next=del->next;
+    free(del);
+    printf("删除成功！\n");
+    return;
+}
+
+//更改密码
+void changeCode(User *temp)
+{   
+    printf("输入新密码: ");
+    scanf("%s",temp->code);
+    printf("修改成功！\n");
+}
+//充钱系统。
+void recharge(User* temp)
+{
+    printf("删除用户，充值金额概不退还\n");
+
+    printf("充值金额: ");
+    double money;
+    scanf("%lf",&money);
+    temp->surplus+=money;
+    temp->consumption+=money;
+    printf("充值成功！\n");
+    printf("当前余额为%.2lf\n",temp->surplus);
+    if(temp->consumption>=upgrademoney&&temp->grade!='A')
+    {
+        printf("恭喜亲爱的大冤种！您单笔消费%d元,您的等级将升级！\n",upgrademoney);
+        temp->grade-=1;
+        printf("当前用户等级：%c\n",temp->grade);
+    }
+}
+
+//登录，返回用户节点,失败返回空指针
+User* logIn(User* head)
+{
+    char id[Maxsize];
+    char code[Maxsize];
+    printf("输入用户id: ");
+    scanf("%s",id);
+    User*temp;
+    int i=0;
+    while(!(temp=isUserExist(head,id)))
+    {
+        i++;
+        printf("用户不存在,请重新输入!\n");
+        printf("输入用户id: ");
+        scanf("%s",id);
+        if(i==4)
+        {
+            printf("次数过多,请稍后再试！\n");
+            return NULL;
+        }
+    }
+    printf("输入该用户密码: ");
+    scanf("%s",code);
+    i=0;
+    while(strcmp(temp->next->code,code)!=0)
+    {
+        i++;
+        printf("密码错误,请重新输入!\n");
+        printf("输入密码: ");
+        scanf("%s",code);
+        if(i==4)
+        {
+            printf("密码错误次数过多,请稍后再试！\n");
+            return NULL;
+        }
+    }
+    return temp->next;
+}
+//打印用户信息
+void printInfo(User* temp)
+{
+    printf("**************************************\n");
+    printf("用户信息：\n");
+    printf("用户id: %s\n",temp->ID);
+    printf("用户等级: %c\n",temp->grade);
+    printf("用户余额: %.2lf\n",temp->surplus);
+    printf("用户消费总额: %.2lf\n",temp->consumption);
+}
+//用户内部
+void local_user(User *local)
+{
+     printf("**************************************\n");
+     printf("欢迎用户%s\n",local->ID);
+
+     while(1)
+        {
+            printf("**************************************\n");
+            printf("指令菜单：\n");
+            printf("1.修改密码；\n");
+            printf("2.充值；\n");
+            printf("3.查看用户信息；\n");
+            printf("4.退出。\n");
+            printf("输入指令(使用数字): ");
+            int operation;
+            scanf("%d",&operation);
+            switch (operation)
+            {
+            case 1:
+                changeCode(local);
+                break;
+            case 2:
+                recharge(local);
+                break;
+            case 3:
+                printInfo(local);
+                break;
+            case 4:
+                return;
+                break;    
+            default:
+                printf("不存在的指令,请重新输入\n");
+                break;
+            }
+        }
+}
+//用户主函数,传入用户链表头指针
+void User_main(User *head)
+{
+    int operation=0;    
     while (1)
     {
+        printf("**************************************\n");
         printf("指令菜单：\n");
         printf("1.注册用户；\n");
         printf("2.注销用户；\n");
-        printf("3.更改密码；\n");
-        printf("4.更改用户等级；\n");
-        printf("5.登录；\n");
-        printf("6.退出。\n");
-        printf("7.打印。\n");
+        printf("3.登录；\n");
+        printf("4.退出。\n");
         printf("输入指令(使用数字): ");
         scanf("%d",&operation);
         switch (operation)
     {
     case 1:
-        
-        add_user(&head);
+        add_user(head);
         break;
 
     case 2:
-        delete_user(&head);
+        delete_user(head);
         break;
-        
+
     case 3:
-        
-        changeCode(head);
-        break;
-
-    case 4:
-        changeGrade(head);
-        break;
-
-    case 5:
-        
-        if ((logIn(head))!=NULL)
+        User *temp;
+        if (temp=logIn(head))
         {
             printf("登录成功\n");
+            local_user(temp);
         }
         else
         {
             printf("登录失败\n");
         }
-        
-        strcpy(current_user_id,logIn(head));
-
-    case 6:
+                break;
+    case 4:
         return;
-
-    case 7:
-        printInfo(head);
-        break;
-    
     default:
         printf("不存在的指令,请重新输入\n");
         break;
