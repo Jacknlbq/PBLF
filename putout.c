@@ -35,12 +35,14 @@ void push_Menu(Menu* p)
         {
             s=p->foodsinfo;
             fprintf(fp,"%s\n",s->food_name);
-            fprintf(fp,"%d ",s->price);
+            fprintf(fp,"%d\n",s->food_id);
+            fprintf(fp,"%lf ",s->price);
             fprintf(fp,"%d\n",s->NUM_source);
             for(int i=0;i<s->NUM_source;i++)
             {
                 fprintf(fp,"%d %d\n",s->source[i].source_Id,s->source[i].source_amount);
             }
+            fprintf(fp,"%s\n",s->food_description);
            p=p->next;
         }
         printf("菜单数据库已更新完毕!\n");
@@ -65,6 +67,8 @@ void push_user(User *p)
             fprintf(fp,"%s\n",p->ID);
             fprintf(fp,"%s\n",p->code);
             fprintf(fp,"%c\n",p->grade);
+            fprintf(fp,"%.2lf\n",p->surplus);
+            fprintf(fp,"%.2lf\n",p->consumption);
             p=p->next;
          }
          printf("用户数据库已更新完毕！\n");
@@ -80,7 +84,7 @@ void push_strategy(Strategy* p)
     }stack;
     stack *s=NULL;
     FILE *fp;
-    if((fp=fopen("test.txt","w"))==NULL)
+    if((fp=fopen(Strategy_filename,"w"))==NULL)
     {
         printf("无法打开%s文件!\n",Strategy_filename);
         return ;
@@ -99,7 +103,7 @@ void push_strategy(Strategy* p)
             }
             //p为空，出栈同时输出该值。
             else{
-               fprintf(fp,"%d\n",s->data->origin);
+               fprintf(fp,"%.2lf\n",s->data->origin);
                fprintf(fp,"%.2lf\n",s->data->discont); 
                p=s->data->right;
                stack *new=s;
@@ -110,4 +114,12 @@ void push_strategy(Strategy* p)
         printf("消费优惠策略数据库已更新！\n");
     }
     fclose(fp);
+}
+
+void putout(Data *p)
+{
+    push_Igd(p->Igd);
+    push_Menu(p->menu);
+    push_user(p->users);
+    push_strategy(p->strategy);
 }
