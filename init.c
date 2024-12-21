@@ -135,10 +135,10 @@ User* init_user()
 }
 void search_insert(Strategy *root,Strategy *p)
 {
-    int n=p->origin;
+    double n=p->origin;
      while(1)
      {
-         if(n<root->origin)
+         if(n>root->origin)
          {
             if(!root->left)
             {
@@ -181,7 +181,7 @@ Strategy *init_strategy()
          while(!feof(fp))
          {
             fseek(fp,-1,1);
-            fscanf(fp,"%d",&p->origin);
+            fscanf(fp,"%lf",&p->origin);
             fscanf(fp,"%lf\n",&p->discont);
             if(p!=root)
             {
@@ -208,12 +208,15 @@ void init_ID(Menu *p){
     }
 }
 //初始化Data,
-void init_Data(Data* p)
+Data * init_Data()
 {
-    p=(Data*)malloc(sizeof(Data));
+    Data *p=(Data*)malloc(sizeof(Data));
     p->Igd=init_Igd();
     p->menu=init_menu();
     p->users=init_user();
     p->strategy=init_strategy();
+    init_queue(p);
+    init_ID(p->menu);
+    return p;
 }
 
