@@ -11,7 +11,7 @@ Source *get_source(int n)
             printf("请输入原料Id:");
             scanf("%d",&source[i].source_Id);
             printf("请输入原料消耗量:");
-            scanf("%d\n",&source[i].source_amount);
+            scanf("%d",&source[i].source_amount);
         }
     return source;
 }
@@ -28,9 +28,9 @@ info_foods *get_info()
     
 
     printf("请输入菜品价格：");
-    scanf("%d",&info->price);
+    scanf("%lf",&info->price);
     
-    info->food_id = ID++;
+    info->food_id = ++ID;
 
     printf("请输入菜品所需原料种类数：");
     scanf("%d",&info->NUM_source);
@@ -38,7 +38,13 @@ info_foods *get_info()
     info->source = get_source(info->NUM_source);
 
     printf("请输入菜品描述：");
-    scanf("%s",info->food_description);
+    char c;
+    while((c=getchar() )== '\n');
+    info->food_description[0] = c;
+    while((c=getchar()) != '\n'){
+        info->food_description[strlen(info->food_description)] = c;
+    }
+    info->food_description[strlen(info->food_description)] = '\0';
     return info;
 }//获取菜品信息
 //新加菜品
@@ -113,6 +119,7 @@ void menu_comment(Menu *L)
         printf("没有找到该菜品！\n");
     
 }
+//打印菜单
 void menu_print(Menu *L)
 {
     if (L->next == NULL){
@@ -123,10 +130,10 @@ void menu_print(Menu *L)
         Menu *node = L->next;
         while (node != NULL){
             printf("菜名:%s\n", node->foodsinfo->food_name);
-            printf("价格:%d\n", node->foodsinfo->price);
+            printf("价格:%.2lf\n", node->foodsinfo->price);
             printf("描述:%s\n", node->foodsinfo->food_description);
             //这里的输出效果还需要完善
             node = node->next;
         }
     }
-}//打印菜单
+}
