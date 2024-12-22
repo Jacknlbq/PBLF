@@ -89,6 +89,7 @@ Menu *init_menu()
       }
               fclose(fp);
    }
+    printf("菜单已初始化。\n");
    return p;
 }
 //初始化用户表,返回指向第一个用户的指针（没有数据）,如果文件创建失败，返回NULL，
@@ -131,6 +132,7 @@ User* init_user()
         }
         fclose(fp);
     }
+    printf("用户数据已初始化。\n");
     return p;
 }
 void search_insert(Strategy *root,Strategy *p)
@@ -207,6 +209,30 @@ void init_ID(Menu *p){
        p=p->next;
     }
 }
+//初始化餐厅信息
+Res_info* init_res()
+{
+     Res_info *p=(Res_info*)malloc(sizeof(Res_info));                  
+     FILE *fp;
+     if(!(fp=fopen(Resturant_filename,"r")))
+     {
+               if(fp=fopen(Resturant_filename,"w"))
+               {
+                printf("无法创建%s文件!\n",Resturant_filename);
+                free(p);
+                return NULL;
+               }
+     }
+     else{
+         fscanf(fp,"%s\n",p->res_name);
+         fscanf(fp,"%s\n",p->res_contactnum);
+         fscanf(fp,"%s\n",p->res_address);
+         fscanf(fp,"%s\n",p->res_owner);
+         fscanf(fp,"%s\n",p->manager_code);
+      }
+        fclose(fp);
+      return p;
+}
 //初始化Data,
 Data * init_Data()
 {
@@ -215,8 +241,10 @@ Data * init_Data()
     p->menu=init_menu();
     p->users=init_user();
     p->strategy=init_strategy();
+    p->res=init_res();
     init_queue(p);
     init_ID(p->menu);
+    printf("所有数据已初始化。\n");
     return p;
 }
 
