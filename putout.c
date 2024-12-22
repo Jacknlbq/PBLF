@@ -116,10 +116,30 @@ void push_strategy(Strategy* p)
     fclose(fp);
 }
 
+void  push_res(Data *p)
+{
+    FILE *fp;
+    if((fp=fopen(Resturant_filename,"w"))==NULL)
+    {
+        printf("无法打开%s文件!\n",Resturant_filename);
+        return ;
+    }
+    else{
+        fprintf(fp,"%s\n",p->res->res_name);
+        fprintf(fp,"%s\n",p->res->res_contactnum);
+        fprintf(fp,"%s\n",p->res->res_address);
+        fprintf(fp,"%s\n",p->res->res_owner);
+        fprintf(fp,"%s\n",p->res->manager_code);
+
+        printf("餐厅信息已更新！\n");
+    }
+    fclose(fp);
+}
 void putout(Data *p)
 {
     push_Igd(p->Igd);
     push_Menu(p->menu);
     push_user(p->users);
     push_strategy(p->strategy);
-}
+    push_res(p);
+}    
