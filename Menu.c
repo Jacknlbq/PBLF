@@ -129,6 +129,8 @@ void menu_print(Menu *L)
     else{
         Menu *node = L->next;
         while (node != NULL){
+            printf("**************************************\n");
+            printf("菜品ID:%d\n", node->foodsinfo->food_id);
             printf("菜名:%s\n", node->foodsinfo->food_name);
             printf("价格:%.2lf\n", node->foodsinfo->price);
             printf("描述:%s\n", node->foodsinfo->food_description);
