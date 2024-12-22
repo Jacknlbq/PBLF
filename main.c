@@ -18,7 +18,6 @@ int main()
         printf("3.点餐；\n");
         printf("4.退出。\n");
         printf("输入指令(使用数字): ");
-        printf("**************************************\n");
         scanf("%d",&operation);
         switch (operation)
         {
@@ -34,16 +33,14 @@ int main()
         case 3:
             order_system(p);
             break;    
+        case 4:
+            return 0;    
         default:
             break;
         }
     }
 
-    push_Igd(p->Igd);
-    push_Menu(p->menu);
-    push_user(p->users);
-    push_strategy(p->strategy);
-
+    putout(p);
 
     return 0;
 }
@@ -118,8 +115,8 @@ int manager_logIn(Res_info *res)
     return 1;
     
 }
-//管理员界面
-void manager_main(Data *p)
+//菜单界面
+void menu_system(Data *p)
 {
     int operation=0;
     while (1)
@@ -157,6 +154,93 @@ void manager_main(Data *p)
         printf("不存在的指令,请重新输入\n");
         break;
     }
+    }
+}
+//原料库管理
+void ingredient_system(Data *p)
+{
+    int operation=0;
+    while (1)
+    {
+        printf("**************************************\n");
+        printf("指令菜单：\n");
+        printf("1.添加原料；\n");
+        printf("2.删除原料；\n");
+        printf("3.查看原料；\n");
+        printf("4.更新原料；\n");
+        printf("5.退出。\n");
+        printf("输入指令(使用数字): ");
+        scanf("%d",&operation);
+        switch (operation)
+    {
+    case 1:
+        insert_Igd(p->Igd);
+        break;
+
+    case 2:
+        delete_Igd(p->Igd);
+        break;
+
+    case 3:
+        show_Igd(p->Igd);
+        break;
+
+    case 4:
+        update_Igd(p->Igd);
+        break;
+
+    case 5:
+        return;
+    default:
+        printf("不存在的指令,请重新输入\n");
+        break;
+    }
+    }
+}
+//管理员界面
+void manager_main(Data *p)
+{
+    int operation=0;
+    while (1)
+    {
+        printf("**************************************\n");
+        printf("指令菜单：\n");
+        printf("1.菜单管理；\n");
+        printf("2.出餐。\n");
+        printf("3.原料库管理；\n");
+        printf("4.查看餐厅信息。\n");
+        printf("5.修改餐厅信息。\n");
+        printf("6.退出。\n");
+        printf("输入指令(使用数字): ");
+        scanf("%d",&operation);
+        switch (operation)
+      {
+        case 1:
+            menu_system(p);
+             break;
+        case 2:
+            pop_queue(p);
+            break;
+        case 3:
+            ingredient_system(p);
+            break;
+        case 4: 
+            printf("**************************************\n");
+            printf("餐厅信息如下：\n");
+            printf("餐厅名：%s\n",p->res->res_name);
+            printf("联系方式：%s\n",p->res->res_contactnum);
+            printf("地址：%s\n",p->res->res_address);
+            printf("店主：%s\n",p->res->res_owner);
+            break;
+        case 5:
+            modify_res(p->res);
+            break;
+        case 6:
+            return;
+        default:
+            printf("不存在的指令,请重新输入\n");
+             break;
+      }
     }
 }
 //点餐系统
