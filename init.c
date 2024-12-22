@@ -222,6 +222,19 @@ Res_info* init_res()
                 free(p);
                 return NULL;
                }
+               else {
+                  p->res_turnover=0;
+                  printf("输入餐厅名字:");
+                 scanf("%s\n",p->res_name);
+                  printf("输入餐厅联系方式:");
+                 scanf("%s\n",p->res_contactnum);
+                  printf("输入餐厅地址:");
+                 scanf("%s\n",p->res_address);
+                  printf("输入餐厅管理者ID:");
+                 scanf("%s\n",p->res_owner);
+                  printf("输入餐厅管理者密码:");
+                 scanf("%s\n",p->manager_code);
+               }
      }
      else{
          fscanf(fp,"%s\n",p->res_name);
@@ -229,6 +242,7 @@ Res_info* init_res()
          fscanf(fp,"%s\n",p->res_address);
          fscanf(fp,"%s\n",p->res_owner);
          fscanf(fp,"%s\n",p->manager_code);
+         fscanf(fp,"%lf\n",&p->res_turnover);
       }
         fclose(fp);
       return p;
