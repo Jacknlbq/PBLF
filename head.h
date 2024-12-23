@@ -55,7 +55,7 @@ typedef struct menu{
 //点餐顺序，采用顺序表，队列
 typedef struct queue{
     char  ID[Maxsize];
-    char status;//是否是会员
+    int status;//是否是会员
     int NUM_foods;
     int *foos_id;
 }Queue;
@@ -144,6 +144,8 @@ User* create_user() ;
 void User_main(User *head);
 void order_system(Data *p);
 void manager_main(Data *p);
+void strategy_system(Strategy *p);
+void ingredient_system(Data *p);
 int manager_logIn(Res_info *res);
 
 void insert_Igd(Ingredient *p);
@@ -151,5 +153,12 @@ void delete_Igd(Ingredient *p);
 void show_Igd(Ingredient *p);
 void update_Igd(Ingredient *p);
 void modify_res(Res_info *p);
+
+void print_strategy(Strategy *p);
+void insert_strategy(Strategy **p);
+void delete_strategy(Strategy **p);
+void modify_strategy(Strategy *p);
+Strategy*  search_equvial(Strategy *root,Strategy *p);
+
 
 #endif
