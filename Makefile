@@ -1,4 +1,4 @@
-src = putout.o main.o init.o queue.o menu.o user.o Igd_res.o
+src = putout.o main.o init.o queue.o menu.o user.o Igd_res.o Strategy.o
 
 
 Test.out : $(src)
@@ -17,5 +17,7 @@ user.o : user.c
 	gcc -c $< -o $@	
 Igd_res.o : Igd_res.c
 	gcc -c $< -o $@	
+Strategy.o : Strategy.c	
+	gcc -c $< -o $@
 clean :
 	-rm -rf $(src)
