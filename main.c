@@ -1,5 +1,4 @@
 #include "head.h"
-extern int current_Igd;
 
 int main()
 {
@@ -34,15 +33,13 @@ int main()
             order_system(p);
             break;    
         case 4:
+           putout(p);
             return 0;    
         default:
             break;
         }
     }
-
-    putout(p);
-
-    return 0;
+    
 }
 //用户主函数,传入用户链表头指针
 void User_main(User *head)
@@ -210,7 +207,8 @@ void manager_main(Data *p)
         printf("3.原料库管理；\n");
         printf("4.查看餐厅信息。\n");
         printf("5.修改餐厅信息。\n");
-        printf("6.退出。\n");
+        printf("6.优惠策略管理。\n");
+        printf("7.退出。\n");
         printf("输入指令(使用数字): ");
         scanf("%d",&operation);
         switch (operation)
@@ -236,7 +234,10 @@ void manager_main(Data *p)
             modify_res(p->res);
             break;
         case 6:
-            return;
+            strategy_system(p->strategy);
+            break;
+        case 7:
+            return;    
         default:
             printf("不存在的指令,请重新输入\n");
              break;
@@ -272,5 +273,46 @@ void order_system(Data *p)
                 printf("不存在的指令,请重新输入\n");
                 break;
         }
+    }
+}
+//优惠策略管理
+void strategy_system(Strategy *p)
+{
+    int operation=0;
+    while (1)
+    {
+        printf("**************************************\n");
+        printf("指令菜单：\n");
+        printf("1.添加策略；\n");
+        printf("2.删除策略；\n");
+        printf("3.修改策略；\n");
+        printf("4.查看策略；\n");
+        printf("5.退出。\n");
+        printf("输入指令(使用数字): ");
+        scanf("%d",&operation);
+        switch (operation)
+    {
+    case 1:
+        insert_strategy(&p);
+        break;
+
+    case 2:
+        delete_strategy(&p);
+        break;
+
+    case 3:
+        modify_strategy(p);
+        break;
+
+    case 4:
+        print_strategy(p);
+        break;
+
+    case 5:
+        return;
+    default:
+        printf("不存在的指令,请重新输入\n");
+        break;
+    }
     }
 }
