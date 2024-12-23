@@ -78,6 +78,11 @@ void push_user(User *p)
 //中序遍历更新策略数据库
 void push_strategy(Strategy* p)
 {
+    if(p==NULL)
+    {
+        printf("没有策略\n");
+        return;
+    }
     typedef struct stack{
         Strategy *data;
         struct stack* next;
@@ -130,7 +135,7 @@ void  push_res(Data *p)
         fprintf(fp,"%s\n",p->res->res_address);
         fprintf(fp,"%s\n",p->res->res_owner);
         fprintf(fp,"%s\n",p->res->manager_code);
-
+        fprintf(fp,"%.2f\n",p->res->res_turnover);
         printf("餐厅信息已更新！\n");
     }
     fclose(fp);
