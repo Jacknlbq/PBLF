@@ -19,8 +19,6 @@ void insert_queue(Data *q)
     {
        int n=q->tail%Max_table;
        printf("输入点餐信息:\n");
-       printf("是否是会员？(y/n):");
-         scanf("%c",&q->list[n].status);
        printf("输入用户编号：");
        scanf("%s",q->list[n].ID);
        printf("输入要点几道菜：\n");
@@ -131,8 +129,9 @@ void pop_queue(Data* q)
             Sum-=p->discont;
         }            
         double sum=Sum;
-
-        if(q->list[n].status=='y')
+        printf("是否是会员？(1代表是/0代表不是)\n");
+        scanf("%d",&q->list[n].status);
+        if(q->list[n].status)
         {
             printf("您是会员，将采用会员支付！\n");
             User *temp;
@@ -156,12 +155,14 @@ void pop_queue(Data* q)
                 }
                 printf("会员支付成功！实付款：%.2lf\n",Sum);
                 temp->surplus-=Sum;
+                q->res->res_turnover+=Sum;
                 printf("当前余额为%.2lf\n",temp->surplus);
             }
             else printf("会员支付失败！\n");
         }
          else{
                printf("实付款：%.2lf\n",sum);
+               q->res->res_turnover+=sum;
          }
         q->head++;
      }
