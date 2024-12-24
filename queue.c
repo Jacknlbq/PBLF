@@ -46,6 +46,12 @@ void insert_queue(Data *q)
                 i--;
                 continue;
             }
+            printf("当前已点菜品信息：\n");
+            for(int j=0;j<=i;j++)
+            {
+                s=search_foods(q->list[n].foos_id[j],q->menu);
+                printf("菜品：%s         价格：%.2lf\n",s->foodsinfo->food_name,s->foodsinfo->price);
+        }
       }
          printf("点餐成功！现在前方还有%d个人在排队\n",q->tail-q->head);
          q->tail++;
