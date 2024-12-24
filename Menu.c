@@ -56,6 +56,7 @@ void menu_insert(Menu *L)
         node->next = L->next;
         L->next = node;
         printf("菜品添加成功！\n");
+        
 }
 //删除菜品
 void menu_delete(Menu *L)
